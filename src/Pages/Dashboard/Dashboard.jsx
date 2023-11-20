@@ -1,5 +1,5 @@
 import React from "react";
-import { FaBook, FaCalendar, FaCartShopping, FaHouseMedical, FaList, FaPaypal, FaUtensils } from "react-icons/fa6";
+import { FaBook, FaCalendar, FaCartShopping, FaHouseMedical, FaList, FaPaypal, FaUsers, FaUtensils } from "react-icons/fa6";
 import { NavLink, Outlet } from "react-router-dom";
 import useAdmin from "../../Hooks/useAdmin";
 
@@ -72,7 +72,7 @@ const Dashboard = () => {
                 isPending ? "pending" : isActive ? " " : " "
               }
             >
-                <FaBook></FaBook>
+                <FaUsers></FaUsers>
                 All Users
             </NavLink>
             
@@ -95,7 +95,7 @@ const Dashboard = () => {
           </li>
           <li >
             <NavLink
-              to="userHome"
+              to="/dashboard/payment"
               className={({ isActive, isPending }) =>
                 isPending ? "pending" : isActive ? " " : ""
               }
@@ -106,7 +106,7 @@ const Dashboard = () => {
           </li>
           <li >
             <NavLink
-              to="userHome"
+              to="/dashboard/history"
               className={({ isActive, isPending }) =>
                 isPending ? "pending" : isActive ? " " : ""
               }

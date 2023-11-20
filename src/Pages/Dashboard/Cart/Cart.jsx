@@ -5,6 +5,7 @@ import { FaDeleteLeft } from "react-icons/fa6";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxios from "../../../Hooks/useAxios";
 import swal from "sweetalert";
+import { Link } from "react-router-dom";
 
 
 const Cart = () => {
@@ -57,8 +58,13 @@ const Cart = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="uppercase text-4xl text-black font-medium">Total Order : {cart.length}</h1>
-          <h1 className="uppercase text-4xl text-black font-medium">Total Price : {totalPrice}</h1>
-          <button className="btn bg-[#D1A054]">Pay</button>
+          <h1 className="uppercase text-4xl text-black font-medium">Total Price : {parseInt(totalPrice)}</h1>
+         { cart.length ?
+          <Link to={'/dashboard/payment'}>
+            <button className="btn bg-[#D1A054]">Pay</button>
+          </Link> :
+           <button disabled className="btn bg-[#D1A054]">Pay</button>
+         }
         </div>
         {/* table */}
         <div>
