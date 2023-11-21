@@ -4,9 +4,11 @@ import useAuth from '../../Hooks/useAuth';
 import toast from 'react-hot-toast';
 import { FaCartShopping} from 'react-icons/fa6';
 import useCart from '../../Hooks/useCart';
+import useAdmin from '../../Hooks/useAdmin';
 
 const Navbar = () => {
   const {user, logOut} = useAuth();
+  const [isAdmin] = useAdmin();
   console.log('user', user);
   const [cart] = useCart();
   // console.log(cart);
@@ -27,14 +29,32 @@ const Navbar = () => {
 >
   CONTACT US
 </NavLink>
+
+ {/* //? if user is admin then take user to admin home */}
+{ user && isAdmin &&  
 <NavLink
-  to="/dashboard"
+  to="/dashboard/adminHome"
   className={({ isActive, isPending }) =>
     isPending ? "pending" : isActive ? "text-red-600" : ""
   }
 >
  DASHBOARD
 </NavLink>
+
+}
+
+ {/* //? if user is not admin then take user to user home */}
+{ user && !isAdmin &&  
+<NavLink
+  to="/dashboard/userHome"
+  className={({ isActive, isPending }) =>
+    isPending ? "pending" : isActive ? "text-red-600" : ""
+  }
+>
+ DASHBOARD
+</NavLink>
+
+}
 <NavLink
   to="/menu"
   className={({ isActive, isPending }) =>
@@ -59,7 +79,7 @@ const Navbar = () => {
 >
 <button className="flex gap-2 items-center">
    <FaCartShopping/>
-  <div className="badge badge-secondary">+{cart.length}</div>
+  <div className="badge badge-secondary">+{user && cart.length}</div>
 </button>
 </NavLink>
     </>;
