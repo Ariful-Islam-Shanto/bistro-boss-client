@@ -3,9 +3,10 @@ import useAuth from "../../../../Hooks/useAuth";
 import useAxios from "../../../../Hooks/useAxios";
 import { useQuery } from "@tanstack/react-query";
 import { FaBowlFood, FaProductHunt, FaTruck, FaUsers, FaWallet } from "react-icons/fa6";
-import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid ,  PieChart, Pie, Sector, ResponsiveContainer, Legend} from 'recharts';
 
 const colors = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', 'red', 'pink'];
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
 const AdminHome = () => {
   const { user } = useAuth();
@@ -23,7 +24,7 @@ const AdminHome = () => {
   });
 
   //? get the order stats
-  const { data: barChartData = [], loading: orderStatsLoading } = useQuery({
+  const { data: chartData = [], loading: orderStatsLoading } = useQuery({
     queryKey: ["orderStats"],
     queryFn: async () => {
       const { data } = await axiosSecure.get("/order-stats");
@@ -32,9 +33,13 @@ const AdminHome = () => {
   });
 
 
+  const pieChartData = chartData?.map(data => {
+    return { name : data?.category, value : data.quantity}
+})
+
 
   
-  //? Shapes for the chart
+  //? Shapes for the bar chart
   const getPath = (x, y, width, height) => {
     return `M${x},${y + height}C${x + width / 3},${y + height} ${x + width / 2},${y + height / 3}
     ${x + width / 2}, ${y}
@@ -48,8 +53,26 @@ const AdminHome = () => {
     return <path d={getPath(x, y, width, height)} stroke="none" fill={fill} />;
   };
 
+
+  //? shape for the pie chart
+  const RADIAN = Math.PI / 180;
+const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
+  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
   return (
-    <div className="my-12 px-12 w-full space-y-6">
+    <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
+      {`${(percent * 100).toFixed(0)}%`}
+    </text>
+  );
+};
+
+
+
+
+  return (
+    <div className="my-12 px-12 w-full space-y-12">
 
         <h1 className="text-4xl text-black font-bold"><span className="text-2xl font-medium">Welcome Back</span> {user?.displayName}</h1>
       <div className="stats flex items-center justify-center gap-4 w-full ">
@@ -90,13 +113,13 @@ const AdminHome = () => {
       </div>
 
    
-      <div className="flex">
+      <div className="flex items-center justify-between gap-10">
         {/* Bar Chart */}
       <div className="flex-1">
       <BarChart
       width={500}
       height={300}
-      data={barChartData}
+      data={chartData}
       margin={{
         top: 20,
         right: 30,
@@ -108,7 +131,7 @@ const AdminHome = () => {
       <XAxis dataKey="category" />
       <YAxis />
       <Bar dataKey="quantity" fill="#8884d8" shape={<TriangleBar />} label={{ position: 'top' }}>
-        {barChartData.map((entry, index) => (
+        {chartData.map((entry, index) => (
           <Cell key={`cell-${index}`} fill={colors[index % 6]} />
         ))}
       </Bar>
@@ -116,7 +139,25 @@ const AdminHome = () => {
       </div>
        {/* Pie Chart */}
        <div className="flex-1">
-
+        <PieChart width={400} height={400}>
+          <Pie
+            data={pieChartData}
+            cx="50%"
+            cy="50%"
+            labelLine={false}
+            label={renderCustomizedLabel}
+            outerRadius={80}
+            fill="#8884d8"
+            dataKey="value"
+          >
+            {pieChartData?.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            ))}
+          </Pie>
+          
+        {/* Name of the filed in pie chart */}
+        <Legend></Legend>
+        </PieChart>
        </div>
       </div>
     </div>

@@ -87,7 +87,7 @@ const route = createBrowserRouter([
                 {
                     path : 'updateItem/:id',
                     element : <AdminRoute><UpdateItem></UpdateItem></AdminRoute>,
-                    loader : ({params}) => fetch(`http://localhost:5000/menuById/${params.id}`)
+                    loader : ({params}) => fetch(`https://bistro-boss-server-zeta-six.vercel.app/menuById/${params.id}`)
                 }
             ]
         }
